@@ -6,7 +6,7 @@ import random
 
 @dag(
     dag_id="test_medium_workload",
-    start_date=datetime(2026, 1, 1),
+    start_date=datetime(2025, 1, 1),
     schedule=None,
     catchup=False,
     tags=["test", "medium"],
@@ -22,11 +22,13 @@ def test_medium_workload():
         print(f"✅ Resultado cálculo: {total}")
 
     @task
-    def data_task():
+    def datatask():
         print("🧠 Procesando datos...")
-        data = [random.randint(1, 1000) for _ in range(1000000)]
+        data = [random.randint(1, 1000) for _ in range(1_000_000)]
         data_sorted = sorted(data)
-        print(f"✅ Datos procesados. Min: {data_sorted[0]}, Max: {data_sorted[-1]}")
+        print(
+            f"✅ Datos procesados. Min: {data_sorted[0]}, Max: {data_sorted[-1]}"
+        )
 
     @task
     def sleep_task():
@@ -36,9 +38,8 @@ def test_medium_workload():
             time.sleep(3)
         print("✅ Proceso completado")
 
-    # Definir dependencias
     cpu = cpu_task()
-    data = data_task()
+    data = datatask()
     sleep = sleep_task()
 
     cpu >> data >> sleep
